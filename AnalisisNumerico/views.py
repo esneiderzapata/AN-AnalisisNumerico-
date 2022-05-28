@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 
+from .models import Metodo
+
 # Create your views here.
 
 def home(request):
@@ -9,7 +11,11 @@ def home(request):
 
 def methods(request):
 	searchTerm = request.GET.get('searchMethod')
-	return render(request, 'methods.html', {'searchTerm':searchTerm})
+	if searchTerm:
+		metodos = Metodo.objects.filter(nombre__icontains=searchTerm)
+	else:
+		metodos = Metodo.objects.all()
+	return render(request, 'methods.html', {'searchTerm':searchTerm, 'metodos':metodos})
 
 def about(request):
 	return HttpResponse('<h1>Holaaaa</h1>')
