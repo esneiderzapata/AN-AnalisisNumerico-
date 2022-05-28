@@ -17,7 +17,14 @@ from django.contrib import admin
 from django.urls import path
 from AnalisisNumerico import views as ANviews
 
+from django.conf.urls.static import static
+from django.conf import settings
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', ANviews.home),
+    path('about/', ANviews.about),
+    path('methods/', ANviews.methods),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
