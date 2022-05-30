@@ -3,7 +3,9 @@ from django.http import HttpResponse
 
 from .models import Metodo
 
+from math import *
 from sympy import *
+import sympy as sp
 
 # Create your views here.
 
@@ -47,9 +49,8 @@ def biseccion(request):
 	tablaBiseccion = [['Iter','xi','xs','xmedio','F(xi)','F(xs)','F(xmedio)','Error']]
 
 	f = lambdify(x, exp, "math")
-	print(xi," / ", xs," / ", _type," / ", tol)
 
-	if(f(xi)*f(xs)<0):
+	if(f(xi)*f(xs)<=0):
 		while (abs(error)>tol) and (iterActual<_iter):
 
 			auxi = xi
@@ -117,7 +118,167 @@ def puntofijo(request):
 			x0 = x1
 
 	return render(request, 'puntofijo.html', {'iterActual':iterActual, 'x1':x1, 'tablaPuntoFijo':tablaPuntoFijo, 'exp':exp})
+
+def reglafalsa(request):
+	error = 9999
+	iterActual = 0
+
+	solucion = None
+	
+	x = symbols('x') 
+	exp = 4*x**4-9*x**2+1
+	xi = 0
+	xs = 1
+	_type = 1
+	tol = 0.001
+	_iter = 1000
+
+	tablaReglaFalsa = [[]]
+	auxi = 0
+	auxs = 0
+
+	if request.method == 'POST':
+		tablaReglaFalsa.clear()
+		exp = request.POST.get('txtFUN')
+		xi = eval(request.POST.get('txtXI'))
+		xs = eval(request.POST.get('txtXS'))
+		_type = eval(request.POST.get('txtTYPE'))
+		tol = eval(request.POST.get('txtTOL'))
+		_iter = eval(request.POST.get('txtITER'))
+
+	tablaReglaFalsa = [['Iter','xi','xs','xr','Error']]
+
+	f = lambdify(x, exp, "math")
+	
+	#Evaluar si la raiz esta dentro del intervalo
+	if (f(xi)*f(xs)<=0):
+		#Calcular la solucion
+		while (abs(error)>tol) and (iterActual<_iter):
+			iterActual += 1
+			solucion = float(xs - ((f(xs)*(xs-xi)) / (f(xs)-f(xi))))
+
+			if (_type==0):
+				error = solucion-xi
+			else:
+				error = (solucion-xi)/solucion
+
+			tablaReglaFalsa.append([(iterActual),f"{float(xi):.3f}",f"{float(xs):.3f}",f"{float(solucion):.3f}",f"{float(error):.6f}"])
+
+			#Redefinir el nuevo intervalo
+			if (f(xi)*f(solucion))>=0:
+				xi = solucion
+			else:
+				xs = solucion
+
+
+	return render(request, 'reglafalsa.html', {'iterActual':iterActual, 'solucion':solucion, 'tablaReglaFalsa':tablaReglaFalsa, 'exp':exp})
 		
+def newtonraphson(request):
+	error = 9999
+	iterActual = 0
+	
+	x = symbols('x') 
+	exp = cos(x)-x**3
+	x0 = pi
+	_type = 0
+	tol = 0.0001
+	_iter = 10
+
+	tablaNewtonRaphson = [[]]
+	auxi = 0
+	auxs = 0
+
+	if request.method == 'POST':
+		tablaNewtonRaphson.clear()
+		exp = request.POST.get('txtFUN')
+		x0 = eval(request.POST.get('txtX0'))
+		_type = eval(request.POST.get('txtTYPE'))
+		tol = eval(request.POST.get('txtTOL'))
+		_iter = eval(request.POST.get('txtITER'))
+
+	tablaNewtonRaphson = [['Iter','xn','xn-f(xn)/df(xn)','Error']]
+
+	f = lambdify(x, exp, "math")
+	df= lambdify(x, sp.diff(exp), "math")
+
+	while (abs(error)>tol) and (iterActual<_iter):
+		x1 = float(x0-f(x0)/df(x0))
+		
+		if (_type==0):
+			error = x1-x0
+		else:
+			error = (x1-x0)/x1
+	
+		iterActual += 1
+		tablaNewtonRaphson.append([(iterActual),f"{float(x0):.3f}",f"{float(x1):.3f}",f"{float(error):.6f}"])
+		
+		if (abs(error)<tol):
+			break
+		else:
+			x0 = x1
+	
+	return render(request, 'newtonraphson.html', {'iterActual':iterActual, 'x1':x1, 'tablaNewtonRaphson':tablaNewtonRaphson, 'exp':exp, 'df':sp.diff(exp)})
+
+def secante(request):
+	error = 9999
+	iterActual = 0
+	
+	x = symbols('x') 
+	exp = x**2-10
+	x0 = 11
+	x1 = 10
+	tol = 10**-7
+	_iter = 10
+
+	tablaSecante = [[]]
+	auxi = 0
+	auxs = 0
+
+	if request.method == 'POST':
+		tablaSecante.clear()
+		exp = request.POST.get('txtFUN')
+		x0 = eval(request.POST.get('txtX0'))
+		x1 = eval(request.POST.get('txtX1'))
+		tol = eval(request.POST.get('txtTOL'))
+		_iter = eval(request.POST.get('txtITER'))
+
+	tablaSecante = [['Iter','xn','xn+1','xn+2','Error']]
+
+	f = lambdify(x, exp, "math")
+
+	while (abs(error)>tol) and (iterActual<_iter):
+		x2 = float(x0-((x1-x0)/(f(x1)-f(x0)))*f(x0))
+
+		error = f(x2)
+		iterActual += 1
+
+		tablaSecante.append([(iterActual),f"{float(x0):.3f}",f"{float(x1):.3f}",f"{float(x2):.3f}",f"{float(error):.6f}"])
+
+		x0 = x1
+		x1 = x2
+
+	return render(request, 'secante.html', {'iterActual':iterActual, 'x2':x2, 'tablaSecante':tablaSecante, 'exp':exp})
 
 def about(request):
+	descifradorMatrices('1 2 3 # 12 12 12 # 1 2 4 # 1 5 6 # 9 9 9')
 	return HttpResponse('<h1>Holaaaa</h1>')
+
+def descifradorMatrices(matrizCifrada):
+	lista = matrizCifrada.split()
+	sublista = []
+	matrizDescifrada = []
+	cont = 0
+	memoria = 0
+
+	for x in lista:
+		if (x != '#'):
+			sublista.append(int(x))
+			cont += 1
+		else:
+			matrizDescifrada.append(sublista[memoria:cont])
+			memoria = cont
+			
+	matrizDescifrada.append(sublista[memoria:cont+1])
+
+	return matrizDescifrada
+
