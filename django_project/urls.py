@@ -26,6 +26,7 @@ urlpatterns = [
     path('about/', ANviews.about),
     path('methods/', ANviews.methods),
     path('Biseccion/', ANviews.biseccion),
+    path('PuntoFijo/', ANviews.puntofijo),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
