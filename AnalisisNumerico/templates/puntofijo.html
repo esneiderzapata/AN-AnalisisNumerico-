@@ -12,7 +12,7 @@
 	<tittle> <h3>Metodo "Punto Fijo"</h3> </tittle>
 </head>
 
-Se ingresa la funcion, el valor inicial y final del intervalo (xi, xs), el tipo de error (0=Absoluto, 1=Relativo) la tolerancia del error y el maximo numero de iteraciones  <br><br>
+Se ingresa la funcion g(x), el valor inicial (x0), el tipo de error (0=Absoluto, 1=Relativo), la tolerancia del error y el maximo numero de iteraciones <br><br>
 
 <body>
 <form action="" method="post" enctype="multipart/form-data">
@@ -21,11 +21,8 @@ Se ingresa la funcion, el valor inicial y final del intervalo (xi, xs), el tipo 
 	<label>Funcion</label>
 	<input type="text" name="txtFUN" id="txtFUN"> <br>
 
-	<label>xi</label>
-	<input type="text" name="txtXI" id="txtXI"> <br>
-
-	<label>xs</label>
-	<input type="text" name="txtXS" id="txtXS"> <br><br>
+	<label>x0</label>
+	<input type="text" name="txtX0" id="txtX0"> <br><br>
 
 	<label>Tipo de Error</label>
 	<input type="number" name="txtTYPE" id="txtTYPE"> <br>
@@ -43,8 +40,8 @@ Se ingresa la funcion, el valor inicial y final del intervalo (xi, xs), el tipo 
 	</a>
 </form>
 
-    <p>En {{ iterActual }} iteraciones se encontro el valor: {{ puntoMedio }} para la expresion {{ exp }}</p> 
-	{%for lista in tablaBiseccion%}
+    <p>En {{ iterActual }} iteraciones se encontro el valor: {{ x1 }} para la expresion g(x)={{ exp }}</p> 
+	{%for lista in tablaPuntoFijo%}
 		{%for dato in lista%}
 			&nbsp; {{ dato }} &nbsp; &nbsp; &nbsp; &nbsp;
 		{% endfor %}

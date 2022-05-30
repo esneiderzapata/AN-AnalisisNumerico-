@@ -12,7 +12,7 @@
 	<tittle> <h3>Metodo "Biseccion"</h3> </tittle>
 </head>
 
-Se ingresa la funcion, el valor inicial y final del intervalo (xi, xs), el tipo de error (0=Absoluto, 1=Relativo) la tolerancia del error y el maximo numero de iteraciones  <br><br>
+Se ingresa la funcion f(x), el valor inicial y final del intervalo (xi, xs), el tipo de error (0=Absoluto, 1=Relativo), la tolerancia del error y el maximo numero de iteraciones  <br><br>
 
 <body>
 <form action="" method="post" enctype="multipart/form-data">
@@ -43,7 +43,7 @@ Se ingresa la funcion, el valor inicial y final del intervalo (xi, xs), el tipo 
 	</a>
 </form>
 
-    <p>En {{ iterActual }} iteraciones se encontro el valor: {{ puntoMedio }} para la expresion {{ exp }}</p> 
+    <p>En {{ iterActual }} iteraciones se encontro el valor: {{ puntoMedio }} para la expresion f(x)={{ exp }}</p> 
 	{%for lista in tablaBiseccion%}
 		{%for dato in lista%}
 			&nbsp; {{ dato }} &nbsp; &nbsp; &nbsp; &nbsp;
