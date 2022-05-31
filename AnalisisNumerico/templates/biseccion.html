@@ -43,7 +43,7 @@ Se ingresa la funcion f(x), el valor inicial y final del intervalo (xi, xs), el 
 	</a>
 </form>
 
-    <p>En {{ iterActual }} iteraciones se encontro el valor: {{ puntoMedio }} para la expresion f(x)={{ exp }}</p> 
+    <p>{{ mensaje }}En {{ iterActual }} iteraciones se encontro el valor: {{ puntoMedio }} para la expresion f(x)={{ exp }} con un error de: {{ error }}</p> 
 	{%for lista in tablaBiseccion%}
 		{%for dato in lista%}
 			&nbsp; {{ dato }} &nbsp; &nbsp; &nbsp; &nbsp;
