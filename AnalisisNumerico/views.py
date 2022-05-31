@@ -6,11 +6,11 @@ from .models import Metodo
 from math import *
 from sympy import *
 import sympy as sp
+import numpy as np
 
 # Create your views here.
 
 def home(request):
-	#return HttpResponse('<h1>Holaaaa</h1>')
 	return render(request, 'home.html', {'name':'Esneider Zapata Arias'})
 
 def methods(request):
@@ -259,9 +259,86 @@ def secante(request):
 
 	return render(request, 'secante.html', {'iterActual':iterActual, 'x2':x2, 'tablaSecante':tablaSecante, 'exp':exp})
 
+def gaussjordan(request):
+
+	A = np.array([[4,2,5],[2,5,8],[5,4,3]])
+	B = np.array([[60.70],[92.90],[56.30]])
+
+	if request.method == 'POST':
+		A = np.array(descifradorMatrices(str(request.POST.get('txtA'))))
+		B = np.array(descifradorMatrices(str(request.POST.get('txtB'))))
+
+	AB = np.concatenate((A,B),axis=1) #Matriz Aumentada
+	ABoriginal = np.concatenate((A,B),axis=1)
+	
+	#Pivoteo Parcial por Filas
+	tamano = np.shape(AB)
+	n = tamano[0]#Filas
+	m = tamano[1]#Columnas
+
+	for i in range(0,n-1):
+		columna= abs(AB[i:,i])
+		dondemax = np.argmax(columna)
+	
+		#Intercambio de Filas
+		if (dondemax != 0):
+			temporal = np.copy(AB[i,:])
+			AB[i,:] = AB[dondemax + i,:]
+			AB[dondemax + i,:] = temporal
+
+	print(AB)
+	return render(request, 'gaussjordan.html', {'ABoriginal':ABoriginal, 'AB':AB, 'A':A, 'B':B})
+
+def gaussseidel(request):
+
+	A = np.array([[3.,-0.1,-0.2],[0.1,7,-0.3],[0.3,-0.2,10]])
+	B = np.array([[7.85],[-19.3],[71.4]])
+	x0 = np.array([0.0,0,0])
+
+	tol = 0.0001
+	_iter = 100
+	
+	error = 9999
+	iterActual = 0
+
+	if request.method == 'POST':
+		A = np.array(descifradorMatrices(str(request.POST.get('txtA'))))
+		B = np.array(descifradorMatrices(str(request.POST.get('txtB'))))
+		x0 = np.array(descifradorMatrices(str(request.POST.get('txtX0'))))
+		tol = eval(request.POST.get('txtTOL'))
+		_iter = eval(request.POST.get('txtITER'))
+
+	tabla = [['Iter','Solucion','Error']]
+	tamano = np.shape(A)
+	n = tamano[0]
+	m = tamano[1]
+
+	X = np.copy(x0)
+	diferencia = np.ones(n, dtype = float)
+
+	i=0
+
+	while (abs(error)>tol) and (iterActual<_iter):
+		for i in range(0,n,1):
+			suma = 0
+			for j in range(0,n,1):
+				if (j != i):
+					suma = suma + A[i,j]*X[j]
+			nuevo = (B[i] - suma)/A[i,i]
+			diferencia[i] = np.abs(nuevo-X[i])
+			X[i] = nuevo
+		
+		error = np.max(diferencia)
+		iterActual += 1
+		tabla.append([iterActual, X, f"{float(error):.6f}"])
+
+	print(X)
+
+
+	return render(request, 'gaussseidel.html', {'X':X, 'iterActual':iterActual, 'tabla':tabla})
+
 def about(request):
-	descifradorMatrices('1 2 3 # 12 12 12 # 1 2 4 # 1 5 6 # 9 9 9')
-	return HttpResponse('<h1>Holaaaa</h1>')
+	return HttpResponse('<h1>Holaaaa</h1>', {'g':g})
 
 def descifradorMatrices(matrizCifrada):
 	lista = matrizCifrada.split()
@@ -269,16 +346,21 @@ def descifradorMatrices(matrizCifrada):
 	matrizDescifrada = []
 	cont = 0
 	memoria = 0
+	XD = False
 
 	for x in lista:
 		if (x != '#'):
-			sublista.append(int(x))
+			sublista.append(float(x))
 			cont += 1
 		else:
+			XD = True
 			matrizDescifrada.append(sublista[memoria:cont])
 			memoria = cont
 			
 	matrizDescifrada.append(sublista[memoria:cont+1])
 
-	return matrizDescifrada
+	if XD:
+		return matrizDescifrada
+	else:
+		return sublista
 

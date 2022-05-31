@@ -1,0 +1,81 @@
+<head>
+	<link 
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+	integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+</head>
+
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device.width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie-edge">
+	<tittle> <h3>Gauss-Jordan</h3> </tittle>
+</head>
+
+Realiza el metodo de Gauss-Jordan o eliminacion gaussiana utilizando la matriz A y el vector B<br><br>
+Para ingresar la matriz A, introduce los valores de las filas separados por espacios, y separa las columnas con # <br> 
+Por ejemplo: 1 34 2 # 8 5 2 # 1 2 3 <br>
+Da como resultado la matriz: <br>
+([1, 34, 2],<br>
+  [8, 5, 2],<br>
+  [1, 2, 3])<br> <br>
+Para introducir el vector B lo hacemos en modo de columna, es decir: 1 # 2 # 3<br>
+([1],<br>
+[2],<br>
+[3])<br><br>
+Los tipos de pivoteo son: 0=sin pivoteo, 1=pivoteo parcial, 2=pivoteo total <br><br>
+
+<body>
+<form action="" method="post" enctype="multipart/form-data">
+	{% csrf_token %}
+
+	<label>Matriz A</label>
+	<input type="text" name="txtA" id="txtA"> <br>
+
+	<label>Vector B (En Columna)</label>
+	<input type="text" name="txtB" id="txtB"> <br>
+
+	<label>Tipo de Pivoteo</label>
+	<input type="text" name="txtPIV" id="txtPIV"> <br><br>
+
+	<input type="submit" value="Ejecutar">
+
+    <a href='/methods' class="btn btn-primary">
+    Volver
+	</a>
+</form>
+
+    <p>Para A=</p> 
+	{%for lista in A%}
+		{%for dato in lista%}
+			&nbsp; {{ dato }} &nbsp; &nbsp; &nbsp; &nbsp;
+		{% endfor %}
+		<br>
+	{% endfor %}
+
+    <br><p>B=</p> 
+	{%for lista in B%}
+		{%for dato in lista%}
+			&nbsp; {{ dato }} &nbsp; &nbsp; &nbsp; &nbsp;
+		{% endfor %}
+		<br>
+	{% endfor %}
+
+    <br><p>Su matriz aumentada es=</p> 
+	{%for lista in ABoriginal%}
+		{%for dato in lista%}
+			&nbsp; {{ dato }} &nbsp; &nbsp; &nbsp; &nbsp;
+		{% endfor %}
+		<br>
+	{% endfor %}
+
+    <br><p>Y luego del pivoteo parcial por filas=</p> 
+	{%for lista in AB%}
+		{%for dato in lista%}
+			&nbsp; {{ dato }} &nbsp; &nbsp; &nbsp; &nbsp;
+		{% endfor %}
+		<br>
+	{% endfor %}
+
+</body>
+</html>
