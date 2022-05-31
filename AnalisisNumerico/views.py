@@ -332,7 +332,7 @@ def gaussseidel(request):
 		iterActual += 1
 		tabla.append([iterActual, X, f"{float(error):.6f}"])
 
-	return render(request, 'gaussseidel.html', {'X':X, 'iterActual':iterActual, 'tabla':tabla})
+	return render(request, 'gaussseidel.html', {'X':X, 'iterActual':iterActual, 'tabla':tabla, 'error':error})
 
 def jacobi(request):
 
@@ -366,6 +366,93 @@ def jacobi(request):
 			break
 
 	return render(request, 'jacobi.html', {'X':X, 'iterActual':iterActual, 'error':error})
+
+def spline(request):
+
+	X = np.array([-3,-1,1,2])
+	Y = np.array([6,2,-1,3])
+	T = 1
+	Tabla = [[]]
+
+	if request.method == 'POST':
+		X = np.array(descifradorMatrices(str(request.POST.get('txtX'))))
+		Y = np.array(descifradorMatrices(str(request.POST.get('txtY'))))
+		T = eval(request.POST.get('txtT'))
+
+	n=len(X)
+	
+	if (T==1):
+		Tabla=[['mx','b']]
+		for k in range(n-1):
+			m=(Y[k+1]-Y[k])/(X[k+1]-X[k])
+			b=Y[k]-m*X[k]
+			Tabla.append([f"{float(m):.3f}",f"{float(b):.3f}"])
+
+	elif(T==3):
+		Tabla=[['ax^3','bx^2','cx','d']]
+		A=np.array(np.zeros([(T+1)*(n-1),(T+1)*(n-1)]))
+		b=np.array(zeros((T+1)*(n-1),1))
+		cua=np.array(np.multiply(X,X))
+		cub=np.array(np.multiply(cua,X))
+		c=1
+		h=1
+		for i in range(1,n):
+			A[i-1,c-1]=cub[i-1]
+			A[i-1,c+1-1]=cua[i-1]
+			A[i-1,c+2-1]=X[i-1]
+			A[i-1,c+3-1]=1
+			b[i-1]=Y[i-1]
+			c=c+4
+			h=h+1
+
+		c=1
+		for i in range(2,n+1):
+			A[h-1,c-1]=cub[i-1]
+			A[h-1,c+1-1]=cua[i-1]
+			A[h-1,c+2-1]=X[i-1]
+			A[h-1,c+3-1]=1
+			b[h-1]=Y[i-1]
+			c=c+4
+			h=h+1
+
+		c=1
+		for i in range(2,n):
+			A[h-1,c-1]=3*cua[i-1]
+			A[h-1,c+1-1]=2*X[i-1]
+			A[h-1,c+2-1]=1
+			A[h-1,c+4-1]=-3*cua[i-1]
+			A[h-1,c+5-1]=-2*X[i-1]
+			A[h-1,c+6-1]=-1
+			b[h-1]=0
+			c=c+4
+			h=h+1
+
+		c=1
+		for i in range(2,n):
+			A[h-1,c-1]=6*X[i-1]
+			A[h-1,c+1-1]=2
+			A[h-1,c+4-1]=-6*X[i-1]
+			A[h-1,c+5-1]=-2
+			b[h-1]=0
+			c=c+4
+			h=h+1
+
+		A[h-1,1-1]=6*X[0]
+		A[h-1,2-1]=2
+		b[h-1]=0
+		h=h+1
+		A[h-1,c-1]=6*X[-1]
+		A[h-1,c+1-1]=2
+		b[h-1]=0
+
+		val = np.dot(np.linalg.inv(A),b)
+		Tablatemp = np.reshape(val,[T+1,n-1],order='F')
+		Tablatemp = np.transpose(Tablatemp)
+		
+		for lista in Tablatemp:
+			Tabla.append(lista)
+
+	return render(request, 'spline.html',{'Tabla':Tabla})
 
 def about(request):
 	return HttpResponse('<h1>Holaaaa</h1>', {'g':g})
