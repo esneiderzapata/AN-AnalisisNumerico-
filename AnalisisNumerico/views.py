@@ -332,10 +332,40 @@ def gaussseidel(request):
 		iterActual += 1
 		tabla.append([iterActual, X, f"{float(error):.6f}"])
 
-	print(X)
-
-
 	return render(request, 'gaussseidel.html', {'X':X, 'iterActual':iterActual, 'tabla':tabla})
+
+def jacobi(request):
+
+	A = np.array([[3.,-0.1,-0.2],[0.1,7,-0.3],[0.3,-0.2,10]])
+	B = np.array([7.85,-19.3,71.4])
+	x0 = np.array([0.0,0,0])
+
+	tol = 0.0001
+	_iter = 100
+	
+	error = 9999
+	iterActual = 0
+
+	if request.method == 'POST':
+		A = np.array(descifradorMatrices(str(request.POST.get('txtA'))))
+		B = np.array(descifradorMatrices(str(request.POST.get('txtB'))))
+		x0 = np.array(descifradorMatrices(str(request.POST.get('txtX0'))))
+		tol = eval(request.POST.get('txtTOL'))
+		_iter = eval(request.POST.get('txtITER'))
+
+	D=np.diag(np.diag(A))
+	LU=A-D
+	X=x0
+	for i in range(_iter):
+		D_inv=np.linalg.inv(D)
+		xtemp=X
+		X=np.dot(D_inv,np.dot(-LU,X))+np.dot(D_inv,B)
+		error = np.linalg.norm(X-xtemp)
+		iterActual+=1
+		if error<tol:
+			break
+
+	return render(request, 'jacobi.html', {'X':X, 'iterActual':iterActual, 'error':error})
 
 def about(request):
 	return HttpResponse('<h1>Holaaaa</h1>', {'g':g})

@@ -32,6 +32,7 @@ urlpatterns = [
     path('Secante/', ANviews.secante),
     path('GaussJordan/', ANviews.gaussjordan),
     path('GaussSeidel/', ANviews.gaussseidel),
+    path('Jacobi/', ANviews.jacobi),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

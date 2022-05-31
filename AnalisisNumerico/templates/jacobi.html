@@ -9,20 +9,18 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device.width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie-edge">
-	<tittle> <h3>Gauss-Seidel</h3> </tittle>
+	<tittle> <h3>Jacobi</h3> </tittle>
 </head>
 
-Realiza el metodo de Gauss-Seidel para sistemas Ax=b utilizando la matriz A y el vector B, mientras A sea estrictamente diagonal dominante<br><br>
+Realiza el metodo de Jacobi para sistemas Ax=b utilizando la matriz A y el vector B, mientras A sea estrictamente diagonal dominante<br><br>
 Para ingresar la matriz A, introduce los valores de las filas separados por espacios, y separa las columnas con # <br> 
 Por ejemplo: 1 34 2 # 8 5 2 # 1 2 3 <br>
 Da como resultado la matriz: <br>
 ([1, 34, 2],<br>
   [8, 5, 2],<br>
   [1, 2, 3])<br> <br>
-Para introducir el vector B lo hacemos en modo de columna, es decir: 1 # 2 # 3<br>
-([1],<br>
-[2],<br>
-[3])<br><br>
+Para introducir el vector B lo hacemos unicamente usando espacios, es decir: 1 2 3<br>
+([1, 2, 3])<br><br>
 El vector x0, se introduce unicamente con espacios: 0 0 0<br><br>
 
 <body>
@@ -51,7 +49,7 @@ El vector x0, se introduce unicamente con espacios: 0 0 0<br><br>
 	</a>
 </form>
 
-    <p>Solucion aproximada en {{ iterActual }} Iteraciones (x1,x2,x3)</p> 
+    Solucion aproximada en {{ iterActual }} Iteraciones con un error de: ({{ error }})<br><br>(x1,x2,x3...xn)<br>
 	{%for dato in X%}
 		[{{ dato }}] &nbsp;
 	{% endfor %}
