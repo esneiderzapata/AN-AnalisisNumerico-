@@ -263,31 +263,65 @@ def gaussjordan(request):
 
 	A = np.array([[4,2,5],[2,5,8],[5,4,3]])
 	B = np.array([[60.70],[92.90],[56.30]])
+	T = 1
 
 	if request.method == 'POST':
 		A = np.array(descifradorMatrices(str(request.POST.get('txtA'))))
 		B = np.array(descifradorMatrices(str(request.POST.get('txtB'))))
+		T = int(request.POST.get('txtPIV'))
 
-	AB = np.concatenate((A,B),axis=1) #Matriz Aumentada
 	ABoriginal = np.concatenate((A,B),axis=1)
-	
-	#Pivoteo Parcial por Filas
+	casicero = 1e-15
+
+	# Evitar truncamiento en operaciones
+	A = np.array(A,dtype=float) 
+
+	# Matriz aumentada
+	AB  = np.concatenate((A,B),axis=1)
+	AB0 = np.copy(AB)
+
+	# Pivoteo parcial por filas
 	tamano = np.shape(AB)
-	n = tamano[0]#Filas
-	m = tamano[1]#Columnas
+	n = tamano[0]
+	m = tamano[1]
+	if T==1:
+		# Para cada fila en AB
+		for i in range(0,n-1,1):
+			# columna desde diagonal i en adelante
+			columna  = abs(AB[i:,i])
+			dondemax = np.argmax(columna)
+    
+			# dondemax no está en diagonal
+			if (dondemax !=0):
+				# intercambia filas
+				temporal = np.copy(AB[i,:])
+				AB[i,:] = AB[dondemax+i,:]
+				AB[dondemax+i,:] = temporal
+	AB1 = np.copy(AB)
 
-	for i in range(0,n-1):
-		columna= abs(AB[i:,i])
-		dondemax = np.argmax(columna)
+	# eliminación hacia adelante
+	for i in range(0,n-1,1):
+		pivote   = AB[i,i]
+		adelante = i + 1
+		for k in range(adelante,n,1):
+			factor  = AB[k,i]/pivote
+			AB[k,:] = AB[k,:] - AB[i,:]*factor
+
+	# sustitución hacia atrás
+	ultfila = n-1
+	ultcolumna = m-1
+	X = np.zeros(n,dtype=float)
+
+	for i in range(ultfila,0-1,-1):
+		suma = 0
+		for j in range(i+1,ultcolumna,1):
+			suma = suma + AB[i,j]*X[j]
+		b = AB[i,ultcolumna]
+		X[i] = (b-suma)/AB[i,i]
+
+	X = np.transpose([X])
 	
-		#Intercambio de Filas
-		if (dondemax != 0):
-			temporal = np.copy(AB[i,:])
-			AB[i,:] = AB[dondemax + i,:]
-			AB[dondemax + i,:] = temporal
-
-	print(AB)
-	return render(request, 'gaussjordan.html', {'ABoriginal':ABoriginal, 'AB':AB, 'A':A, 'B':B})
+	return render(request, 'gaussjordan.html', {'ABoriginal':ABoriginal, 'AB':AB1, 'A':A, 'B':B, 'X':X})
 
 def gaussseidel(request):
 
@@ -454,8 +488,50 @@ def spline(request):
 
 	return render(request, 'spline.html',{'Tabla':Tabla})
 
+def vandermonde(request):
+
+	X = np.array([1,2,3])
+	Y = np.array([2,0,1])
+	Tabla=[[]]
+
+	if request.method == 'POST':
+		X = np.array(descifradorMatrices(str(request.POST.get('txtX'))))
+		Y = np.array(descifradorMatrices(str(request.POST.get('txtY'))))
+
+	n=len(X)
+	X2 = np.ones([n,n])
+	
+	for i in range(1,n+1):
+		for m in range(1,n):
+			X2[i-1,m-1]= (X[i-1]**(n-m))
+
+	solucion = np.dot(np.linalg.inv(X2),Y)
+	return render(request, 'vandermonde.html',{'Tabla':X2, 'solucion':solucion})
+
 def about(request):
 	return HttpResponse('<h1>Holaaaa</h1>', {'g':g})
+
+def pivparcial(A,B):
+	AB = np.concatenate((A,B),axis=1) #Matriz Aumentada
+	ABoriginal = np.concatenate((A,B),axis=1)
+	
+	#Pivoteo Parcial por Filas
+	tamano = np.shape(AB)
+	n = tamano[0]#Filas
+	m = tamano[1]#Columnas
+
+	for i in range(0,n-1):
+		columna= abs(AB[i:,i])
+		dondemax = np.argmax(columna)
+	
+		#Intercambio de Filas
+		if (dondemax != 0):
+			temporal = np.copy(AB[i,:])
+			AB[i,:] = AB[dondemax + i,:]
+			AB[dondemax + i,:] = temporal
+
+	return AB
+
 
 def descifradorMatrices(matrizCifrada):
 	lista = matrizCifrada.split()

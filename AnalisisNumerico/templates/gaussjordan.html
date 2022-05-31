@@ -9,10 +9,10 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device.width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie-edge">
-	<tittle> <h3>Gauss-Jordan</h3> </tittle>
+	<tittle> <h3>Eliminacion Gaussiana</h3> </tittle>
 </head>
 
-Realiza el metodo de Gauss-Jordan o eliminacion gaussiana utilizando la matriz A y el vector B<br><br>
+Realiza el metodo de Eliminacion gaussiana utilizando la matriz A y el vector B<br><br>
 Para ingresar la matriz A, introduce los valores de las filas separados por espacios, y separa las columnas con # <br> 
 Por ejemplo: 1 34 2 # 8 5 2 # 1 2 3 <br>
 Da como resultado la matriz: <br>
@@ -36,7 +36,7 @@ Los tipos de pivoteo son: 0=sin pivoteo, 1=pivoteo parcial, 2=pivoteo total <br>
 	<input type="text" name="txtB" id="txtB"> <br>
 
 	<label>Tipo de Pivoteo</label>
-	<input type="text" name="txtPIV" id="txtPIV"> <br><br>
+	<input type="number" name="txtPIV" id="txtPIV"> <br><br>
 
 	<input type="submit" value="Ejecutar">
 
@@ -71,6 +71,14 @@ Los tipos de pivoteo son: 0=sin pivoteo, 1=pivoteo parcial, 2=pivoteo total <br>
 
     <br><p>Y luego del pivoteo parcial por filas=</p> 
 	{%for lista in AB%}
+		{%for dato in lista%}
+			&nbsp; {{ dato }} &nbsp; &nbsp; &nbsp; &nbsp;
+		{% endfor %}
+		<br>
+	{% endfor %}
+
+	<br><p>Y el vector solucion es=</p> 
+	{%for lista in X%}
 		{%for dato in lista%}
 			&nbsp; {{ dato }} &nbsp; &nbsp; &nbsp; &nbsp;
 		{% endfor %}
