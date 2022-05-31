@@ -50,8 +50,29 @@ El vector x0, se introduce unicamente con espacios: 0 0 0<br><br>
     Volver
 	</a>
 </form>
+	 <p>Para A=</p> 
+	{%for lista in A%}
+		{%for dato in lista%}
+			&nbsp; {{ dato }} &nbsp; &nbsp; &nbsp; &nbsp;
+		{% endfor %}
+		<br>
+	{% endfor %}
 
-    Solucion aproximada en {{ iterActual }} Iteraciones con un error de: ({{ error }})<br><br>(x1,x2,x3...xn)<br>
+    <br><p>B=</p> 
+	{%for lista in B%}
+		{%for dato in lista%}
+			&nbsp; {{ dato }} &nbsp; &nbsp; &nbsp; &nbsp;
+		{% endfor %}
+		<br>
+	{% endfor %}
+
+    <br><p>X0=</p> 
+	{%for dato in x0%}
+		&nbsp; {{ dato }} &nbsp; &nbsp; &nbsp; &nbsp;
+	{% endfor %}
+	<br><br>
+
+    Solucion aproximada en {{ iterActual }} Iteraciones con un error de: ({{ error }})<br>(x1,x2,x3...xn)<br>
 	{%for dato in X%}
 		[{{ dato }}] &nbsp;
 	{% endfor %}

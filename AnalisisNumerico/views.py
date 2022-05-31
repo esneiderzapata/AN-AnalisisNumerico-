@@ -380,7 +380,7 @@ def gaussseidel(request):
 		iterActual += 1
 		tabla.append([iterActual, X, f"{float(error):.6f}"])
 
-	return render(request, 'gaussseidel.html', {'X':X, 'iterActual':iterActual, 'tabla':tabla, 'error':error})
+	return render(request, 'gaussseidel.html', {'X':X, 'iterActual':iterActual, 'tabla':tabla, 'error':error, 'A':A, 'B':B, 'x0':x0})
 
 def jacobi(request):
 
@@ -609,7 +609,7 @@ def newtonint(request):
 	print('polinomio simplificado: ' )
 	print(polisimple)
 
-	return render(request, 'newtonint.html',{'polisimple':polisimple})
+	return render(request, 'newtonint.html',{'polisimple':polisimple,'titulo':titulo,'tabla':tabla})
 
 def about(request):
 	return HttpResponse('<h1>Holaaaa</h1>', {'g':g})

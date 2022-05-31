@@ -38,5 +38,19 @@ Da como resultado el vector:
 
 <p>El polinomio es: {{ polisimple }}</p> 
 
+	<p>Tabla de Diferencias=</p> 
+	{%for lista in titulo%}
+		
+			&nbsp; {{ lista }} &nbsp; &nbsp; &nbsp; &nbsp;
+		
+		
+	{% endfor %}<br>
+	{%for lista in tabla%}
+		{%for dato in lista%}
+			&nbsp; {{ dato }} &nbsp; &nbsp; &nbsp; &nbsp;
+		{% endfor %}
+		<br>
+	{% endfor %}
+
 </body>
 </html>
